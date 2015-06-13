@@ -147,19 +147,6 @@ void Game::drawWorld()
 {
     int distanceDug = (int)(player.getPosition().y);
 
-    if (distanceDug < windowHeight + 1000)
-    {
-        RectangleShape grassLeft(Vector2f(windowWidth / 2 - 16, 32));
-        grassLeft.setTexture(&grassTexture);
-        grassLeft.setTextureRect(IntRect(0, 0, grassLeft.getSize().x, grassLeft.getSize().y));
-        grassLeft.setPosition(Vector2f(view.getCenter().x - windowWidth / 2, -28));
-        window->draw(grassLeft);
-
-        RectangleShape grassRight = grassLeft;
-        grassRight.setPosition(view.getCenter().x + 16, -28);
-        window->draw(grassRight);
-    }
-
     if (distanceDug < (9800 + windowHeight))
     {
         RectangleShape leftGround(Vector2f(windowWidth / 2 - 16, windowHeight + distanceDug));
@@ -187,6 +174,20 @@ void Game::drawWorld()
         middleGround.setPosition(view.getCenter().x - 16, distanceDug);
         window->draw(middleGround);
     }
+
+    if (distanceDug < windowHeight + 1000)
+    {
+        RectangleShape grassLeft(Vector2f(windowWidth / 2 - 16, 32));
+        grassLeft.setTexture(&grassTexture);
+        grassLeft.setTextureRect(IntRect(0, 0, grassLeft.getSize().x, grassLeft.getSize().y));
+        grassLeft.setPosition(Vector2f(view.getCenter().x - windowWidth / 2, -28));
+        window->draw(grassLeft);
+
+        RectangleShape grassRight = grassLeft;
+        grassRight.setPosition(view.getCenter().x + 16, -28);
+        window->draw(grassRight);
+    }
+
     if (distanceDug > (9800))
     {
         RectangleShape leftStone(Vector2f(windowWidth / 2 - 16, windowHeight + distanceDug - 10000));
