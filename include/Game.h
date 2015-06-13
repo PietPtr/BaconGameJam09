@@ -19,6 +19,7 @@ class Game
         void draw();
         void drawWorld();
         void drawMonitor();
+        void drawBuriedItems();
 
         void loadTextures();
         void loadWords();
@@ -42,6 +43,8 @@ class Game
         Texture stoneTexture;
         Texture dirtTexture;
         Texture fontTexture;
+
+        std::vector<Texture> buriedStuffTextures;
 
         Drill player{ &drillTexture };
 

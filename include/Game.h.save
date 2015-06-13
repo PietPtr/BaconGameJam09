@@ -38,9 +38,12 @@ class Game
         int windowHeight = 736;
 
         Texture drillTexture;
-        Texture dirtTexture;
         Texture grassTexture;
+        Texture stoneTexture;
+        Texture dirtTexture;
         Texture fontTexture;
+        
+        std::vector<Texture> buriedStuffTextures;
 
         Drill player{ &drillTexture };
 
@@ -48,5 +51,7 @@ class Game
         std::string enteredText;
         int randomWordIndex = 0;
 
-        GameState gamestate = ga;
+        GameState gamestate = START;
+
+        bool gameStarted = false;
 };

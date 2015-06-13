@@ -7,6 +7,7 @@ using namespace sf;
 
 void celShade(Sprite sprite, RenderWindow* window, Color shadeColor);
 int randint(int low, int high);
+int randint(int low, int high, int seed);
 void drawString(RenderWindow* window, std::string text, Vector2f position, Texture* fontTexture, Color color, int newLine);
 
 Game::Game(RenderWindow* _window)
@@ -132,6 +133,8 @@ void Game::draw()
     window->setView(view);
 
     drawWorld();
+
+    //drawBuriedItems();
 
     player.draw(window, totalTime);
 
@@ -261,6 +264,29 @@ void Game::drawMonitor()
     }
 }
 
+void Game::drawBuriedItems()
+{
+    Vector2f topLeft;// = view.getCenter() - Vector2f(windowWidth / 2, windowHeight / 2);
+    topLeft.x = (int)(view.getCenter().x - (windowWidth  / 2.0)) - ((int)(view.getCenter().x - (windowWidth  / 2.0)) % 32);
+    topLeft.y = (int)(view.getCenter().y - (windowHeight / 2.0)) - ((int)(view.getCenter().y - (windowHeight / 2.0)) % 32);
+
+    for (int y = 0; y < windowHeight / 32; y++)
+    {
+        for (int x = 0; x < windowWidth / 32; x++)
+        {
+            int seed = ((int)(y + topLeft.y / 32) % 4096) * ((int)(x + topLeft.x / 32) % 4096) * 32;
+            if (randint(0, 100, seed) == 0)
+            {
+                Sprite buried;
+                buried.setPosition(x * 32 + topLeft.x, y * 32 + topLeft.y);
+                buried.setTexture(buriedStuffTextures.at(randint(0, buriedStuffTextures.size() - 1, seed)));
+                window->draw(buried);
+            }
+        }
+    }
+    std::cout << "\n";
+}
+
 bool Game::isWindowOpen()
 {
     return window->isOpen();
@@ -279,6 +305,14 @@ void Game::loadTextures()
     if (!stoneTexture.loadFromFile("stone.png"))
         window->close();
 
+    for (int i = 0; i <3; i++)
+    {
+        Texture buriedItem;
+        if (!buriedItem.loadFromFile("buried/" + std::to_string(i) + ".png"))
+            window->close();
+        buriedStuffTextures.push_back(buriedItem);
+    }
+    buriedStuffTextures.at(0).setRepeated(true);
     dirtTexture.setRepeated(true);
     grassTexture.setRepeated(true);
     stoneTexture.setRepeated(true);
