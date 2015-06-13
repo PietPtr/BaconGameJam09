@@ -1,0 +1,28 @@
+#ifndef DRILL_H
+#define DRILL_H
+#include <SFML/Graphics.hpp>
+
+using namespace sf;
+
+class Drill
+{
+    public:
+        Drill(Texture* _drillTexture);
+        void update();
+        void draw(RenderWindow* window, Time totalTime);
+        Vector2f getPosition() { return position; }
+        void addPosition(float value) { position.y += value; }
+        void setFuel(float value) { fuel = value; }
+        void addFuel(float value) { fuel += value;}
+        float getFuel() { return fuel; }
+        float getSpeed() { return speed; }
+    protected:
+    private:
+        Vector2f position { 0, 3 };      //.y = distanceDug
+        float speed = 0.0f;
+        Texture* drillTexture;
+
+        float fuel = 0;
+};
+
+#endif // DRILL_H
