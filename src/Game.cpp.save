@@ -21,7 +21,6 @@ void Game::initialize()
     loadWords();
 
     randomWordIndex = randint(0, words.size());
-    std::cout << words[randomWordIndex] << "\n";
 }
 
 void Game::update()
@@ -43,10 +42,12 @@ void Game::update()
                 Image Screen = window->capture();
                 Screen.saveToFile("screenshot.png");
             }
+            /* Cheating
             if (event.key.code == Keyboard::F1)
                 player.setFuel(500);
             if (event.key.code == Keyboard::F3)
                 player.addPosition(1000);
+            */
             if (gamestate == START)
             {
                 if (event.key.code == Keyboard::Return)
@@ -108,6 +109,38 @@ void Game::update()
         gamestate = GAMEOVER;
     }
 
+    if (player.getPosition().y > 1000)
+    {
+        int itemScarcity = 10;
+
+        for (int i = items.size() - 1; i >= 0; i--)
+        {
+            if (items.at(i).position.y < (player.getPosition().y - windowHeight / 2))
+                items.erase(items.begin() + i);
+        }
+        if (items.size() < itemScarcity)
+        {
+            for (int i = 0; i < (itemScarcity - items.size()); i++)
+            {
+                Item item;
+                float randomx;
+                switch(randint(0, 1))
+                {
+                case(0):
+                    randomx = -randint(2, 19) * 32;
+                    break;
+                case(1):
+                    randomx = randint(1, 19) * 32;
+                    break;
+                }
+                item.position = Vector2f(randomx, player.getPosition().y + 200 + randint(0, 20) * 32);
+                item.type = randint(0, buriedStuffTextures.size() - 1);
+                item.rotation = randint(0, 3) * 90;
+                items.push_back(item);
+            }
+        }
+    }
+
     player.update();
 
     frame++;
@@ -121,6 +154,7 @@ void Game::draw()
     view.setSize(windowWidth, windowHeight);
     view.zoom(1 / 2.0);
 
+    //* Zooming
     if (Keyboard::isKeyPressed(Keyboard::Comma))
     {
         view.zoom(2);
@@ -129,6 +163,7 @@ void Game::draw()
     {
         view.zoom(8);
     }
+    //*/
 
     window->setView(view);
 
@@ -146,19 +181,6 @@ void Game::draw()
 void Game::drawWorld()
 {
     int distanceDug = (int)(player.getPosition().y);
-
-    if (distanceDug < windowHeight + 1000)
-    {
-        RectangleShape grassLeft(Vector2f(windowWidth / 2 - 16, 32));
-        grassLeft.setTexture(&grassTexture);
-        grassLeft.setTextureRect(IntRect(0, 0, grassLeft.getSize().x, grassLeft.getSize().y));
-        grassLeft.setPosition(Vector2f(view.getCenter().x - windowWidth / 2, -28));
-        window->draw(grassLeft);
-
-        RectangleShape grassRight = grassLeft;
-        grassRight.setPosition(view.getCenter().x + 16, -28);
-        window->draw(grassRight);
-    }
 
     if (distanceDug < (9800 + windowHeight))
     {
@@ -187,6 +209,20 @@ void Game::drawWorld()
         middleGround.setPosition(view.getCenter().x - 16, distanceDug);
         window->draw(middleGround);
     }
+
+    if (distanceDug < windowHeight + 1000)
+    {
+        RectangleShape grassLeft(Vector2f(windowWidth / 2 - 16, 32));
+        grassLeft.setTexture(&grassTexture);
+        grassLeft.setTextureRect(IntRect(0, 0, grassLeft.getSize().x, grassLeft.getSize().y));
+        grassLeft.setPosition(Vector2f(view.getCenter().x - windowWidth / 2, -28));
+        window->draw(grassLeft);
+
+        RectangleShape grassRight = grassLeft;
+        grassRight.setPosition(view.getCenter().x + 16, -28);
+        window->draw(grassRight);
+    }
+
     if (distanceDug > (9800))
     {
         RectangleShape leftStone(Vector2f(windowWidth / 2 - 16, windowHeight + distanceDug - 10000));
@@ -266,27 +302,18 @@ void Game::drawMonitor()
 
 void Game::drawBuriedItems()
 {
-    Vector2f topLeft;// = view.getCenter() - Vector2f(windowWidth / 2, windowHeight / 2);
-    topLeft.x = (int)(view.getCenter().x - (windowWidth  / 2.0)) - ((int)(view.getCenter().x - (windowWidth  / 2.0)) % 32);
-    topLeft.y = (int)(view.getCenter().y - (windowHeight / 2.0)) - ((int)(view.getCenter().y - (windowHeight / 2.0)) % 32);
-
-    for (int y = 0; y < windowHeight / 32; y++)
+    for (int i = 0; i < items.size(); i++)
     {
-        for (int x = 0; x < windowWidth / 32; x++)
-        {
-            if (x < windowWidth / 32)
-            int seed = ((int)(y + topLeft.y / 32) % 4096) * ((int)(x + topLeft.x / 32) % 4096) * 32;
-            if (randint(0, 100, seed) == 0)
-            {
-                std::cout << seed << " ";
-                Sprite buried;
-                buried.setPosition(x * 32 + topLeft.x, y * 32 + topLeft.y);
-                buried.setTexture(buriedStuffTextures.at(randint(0, buriedStuffTextures.size() - 1, seed)));
-                window->draw(buried);
-            }
-        }
+        Vector2f textureSize = buriedStuffTextures.at(items.at(i).type
+        
+        Sprite itemSprite;
+        itemSprite.setOrigin(Vector2f(32, 32));
+        itemSprite.setPosition(items.at(i).position);
+        itemSprite.setTexture(buriedStuffTextures.at(items.at(i).type));
+        itemSprite.setRotation(items.at(i).rotation);
+        celShade(itemSprite, window, Color(0, 0, 0));
+        window->draw(itemSprite);
     }
-    std::cout << "\n";
 }
 
 bool Game::isWindowOpen()
@@ -307,7 +334,7 @@ void Game::loadTextures()
     if (!stoneTexture.loadFromFile("stone.png"))
         window->close();
 
-    for (int i = 0; i <3; i++)
+    for (int i = 0; i < amountOfBuriedItemTextures; i++)
     {
         Texture buriedItem;
         if (!buriedItem.loadFromFile("buried/" + std::to_string(i) + ".png"))

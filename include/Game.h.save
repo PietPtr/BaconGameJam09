@@ -10,6 +10,11 @@ enum GameState {
     GAMEOVER
 };
 
+struct Item {
+    Vector2f position;
+    int type;
+};;
+
 class Game
 {
     public:
@@ -19,6 +24,7 @@ class Game
         void draw();
         void drawWorld();
         void drawMonitor();
+        void drawBuriedItems();
 
         void loadTextures();
         void loadWords();
@@ -42,8 +48,10 @@ class Game
         Texture stoneTexture;
         Texture dirtTexture;
         Texture fontTexture;
-        
+
+        int amount
         std::vector<Texture> buriedStuffTextures;
+        std::vector<Item> items;
 
         Drill player{ &drillTexture };
 
@@ -52,6 +60,6 @@ class Game
         int randomWordIndex = 0;
 
         GameState gamestate = START;
-
         bool gameStarted = false;
+
 };

@@ -16,14 +16,14 @@ void Drill::update()
     if (fuel > 0)
     {
         speed += 0.1;
-        fuel -= (position.y / 10000);
+        fuel -= (position.y / 20000);
     }
 
-    int maxSpeed = 7;
+    int maxSpeed = 5;
     position.y += speed;
-    speed = speed < 0 ? 0 : speed - 0.07f; //friction;
-    speed = speed < 0 ? 0 : speed;         //the drill can't go up, so speed can never be negative.
-    speed = speed > maxSpeed ? maxSpeed : speed;         //limit speed;
+    speed = speed < 0 ? 0 : speed - 0.07f;         //friction;
+    speed = speed < 0 ? 0 : speed;                 //the drill can't go up, so speed can never be negative.
+    speed = speed > maxSpeed ? maxSpeed : speed;   //limit speed;
 
     if (fuel > 100)
         fuel = 100;

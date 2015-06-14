@@ -41,7 +41,7 @@ int randint(int low, int high)
 {
     int value = rand() % (high + 1 - low) + low;
     srand(globalTime.asMicroseconds());
-    globalTime += globalClock.restart();
+    std::cout << globalTime.asMicroseconds() <<
 
     return value;
 }
