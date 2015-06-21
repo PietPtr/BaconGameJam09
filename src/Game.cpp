@@ -327,21 +327,21 @@ bool Game::isWindowOpen()
 
 void Game::loadTextures()
 {
-    if (!drillTexture.loadFromFile("drill.png"))
+    if (!drillTexture.loadFromFile("content/drill.png"))
         window->close();
-    if (!dirtTexture.loadFromFile("dirt.png"))
+    if (!dirtTexture.loadFromFile("content/dirt.png"))
         window->close();
-    if (!grassTexture.loadFromFile("grasstop.png"))
+    if (!grassTexture.loadFromFile("content/grasstop.png"))
         window->close();
-    if (!fontTexture.loadFromFile("font.png"))
+    if (!fontTexture.loadFromFile("content/font.png"))
         window->close();
-    if (!stoneTexture.loadFromFile("stone.png"))
+    if (!stoneTexture.loadFromFile("content/stone.png"))
         window->close();
 
     for (int i = 0; i < amountOfBuriedItemTextures; i++)
     {
         Texture buriedItem;
-        if (!buriedItem.loadFromFile("buried/" + std::to_string(i) + ".png"))
+        if (!buriedItem.loadFromFile("content/buried/" + std::to_string(i) + ".png"))
             window->close();
         buriedStuffTextures.push_back(buriedItem);
     }
@@ -354,7 +354,7 @@ void Game::loadTextures()
 
 void Game::loadWords()
 {
-    std::ifstream file("words.txt");
+    std::ifstream file("content/words.txt");
 
     while(!file.eof())
     {
