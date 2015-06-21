@@ -12,7 +12,7 @@ int main()
 
     int windowWidth = 1280;
     int windowHeigth = 736;
-    RenderWindow window(VideoMode(windowWidth, windowHeigth), "Float");
+    RenderWindow window(VideoMode(windowWidth, windowHeigth), "I dig typing");
     window.setVerticalSyncEnabled(true);
 
     Game game(&window);

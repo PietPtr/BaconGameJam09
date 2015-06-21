@@ -50,7 +50,7 @@ class Game
         Texture dirtTexture;
         Texture fontTexture;
 
-        int amountOfBuriedItemTextures = 5;
+        int amountOfBuriedItemTextures = 9;
         std::vector<Texture> buriedStuffTextures;
         std::vector<Item> items;
 

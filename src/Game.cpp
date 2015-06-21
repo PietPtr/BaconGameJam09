@@ -40,14 +40,14 @@ void Game::update()
             if (event.key.code == Keyboard::F2)
             {
                 Image Screen = window->capture();
-                Screen.saveToFile("screenshot.png");
+                Screen.saveToFile("screenshot" + std::to_string(totalTime.asMicroseconds()) + ".png");
             }
             /* Cheating
             if (event.key.code == Keyboard::F1)
-                player.setFuel(500);
+                player.setFuel(100);
             if (event.key.code == Keyboard::F3)
-                player.addPosition(1000);
-            */
+                player.addPosition(100);
+            //*/
             if (gamestate == START)
             {
                 if (event.key.code == Keyboard::Return)
@@ -62,6 +62,7 @@ void Game::update()
                 {
                     gamestate = START;
                     player = Drill(&drillTexture);
+                    items.clear();
                     gameStarted = false;
                 }
                 if (event.key.code == Keyboard::N)
@@ -111,7 +112,8 @@ void Game::update()
 
     if (player.getPosition().y > 1000)
     {
-        int itemScarcity = 10;
+        int spawnBound = (int)(windowWidth / 2 / 32 / 2) - 1;
+        int itemScarcity = spawnBound / 2;
 
         for (int i = items.size() - 1; i >= 0; i--)
         {
@@ -122,15 +124,17 @@ void Game::update()
         {
             for (int i = 0; i < (itemScarcity - items.size()); i++)
             {
+
+
                 Item item;
                 float randomx;
                 switch(randint(0, 1))
                 {
                 case(0):
-                    randomx = -randint(2, 19) * 32;
+                    randomx = -randint(2, spawnBound) * 32;
                     break;
                 case(1):
-                    randomx = randint(1, 19) * 32;
+                    randomx = randint(1, spawnBound) * 32;
                     break;
                 }
                 item.position = Vector2f(randomx, player.getPosition().y + 200 + randint(0, 20) * 32);
@@ -154,7 +158,7 @@ void Game::draw()
     view.setSize(windowWidth, windowHeight);
     view.zoom(1 / 2.0);
 
-    //* Zooming
+    /* Zooming
     if (Keyboard::isKeyPressed(Keyboard::Comma))
     {
         view.zoom(2);
@@ -184,10 +188,10 @@ void Game::drawWorld()
 
     if (distanceDug < (9800 + windowHeight))
     {
-        RectangleShape leftGround(Vector2f(windowWidth / 2 - 16, windowHeight + distanceDug));
+        RectangleShape leftGround(Vector2f(windowWidth / 4 - 16, windowHeight + distanceDug));
         leftGround.setTexture(&dirtTexture);
         leftGround.setTextureRect(IntRect(0, 0, leftGround.getSize().x, leftGround.getSize().y));
-        leftGround.setPosition(Vector2f(view.getCenter().x - windowWidth / 2, 0));
+        leftGround.setPosition(Vector2f(view.getCenter().x - windowWidth / 4, 0));
         window->draw(leftGround);
 
         RectangleShape rightGround = leftGround;
@@ -212,10 +216,10 @@ void Game::drawWorld()
 
     if (distanceDug < windowHeight + 1000)
     {
-        RectangleShape grassLeft(Vector2f(windowWidth / 2 - 16, 32));
+        RectangleShape grassLeft(Vector2f(windowWidth / 4 - 16, 32));
         grassLeft.setTexture(&grassTexture);
         grassLeft.setTextureRect(IntRect(0, 0, grassLeft.getSize().x, grassLeft.getSize().y));
-        grassLeft.setPosition(Vector2f(view.getCenter().x - windowWidth / 2, -28));
+        grassLeft.setPosition(Vector2f(view.getCenter().x - windowWidth / 4, -28));
         window->draw(grassLeft);
 
         RectangleShape grassRight = grassLeft;
@@ -225,10 +229,10 @@ void Game::drawWorld()
 
     if (distanceDug > (9800))
     {
-        RectangleShape leftStone(Vector2f(windowWidth / 2 - 16, windowHeight + distanceDug - 10000));
+        RectangleShape leftStone(Vector2f(windowWidth / 4 - 16, windowHeight + distanceDug - 10000));
         leftStone.setTexture(&stoneTexture);
         leftStone.setTextureRect(IntRect(0, 0, leftStone.getSize().x, leftStone.getSize().y));
-        leftStone.setPosition(Vector2f(view.getCenter().x - windowWidth / 2, 10000));
+        leftStone.setPosition(Vector2f(view.getCenter().x - windowWidth / 4, 10000));
         window->draw(leftStone);
 
         RectangleShape rightStone = leftStone;
@@ -268,7 +272,7 @@ void Game::drawMonitor()
 
     if (gamestate == START)
     {
-        drawString(window, "TYPE THE GREEN WORD AND PRESS SPACE TO FUEL YOUR DRILL AND EXPLORE THE DEPTHS OF THE EARTH. DON'T LOSE SPEED OR IT'S GAME OVER. PRESS ENTER TO START.",
+        drawString(window, "I DIG TYPING TYPE THE GREEN WORD AND PRESS SPACE TO FUEL YOUR DRILL AND EXPLORE THE DEPTHS OF THE EARTH. DON'T LOSE SPEED OR IT'S GAME OVER. PRESS ENTER TO START.",
                    monitorPos + Vector2f(-3, 2), &fontTexture, Color(0, 200, 0), 21);
     }
     else if (gamestate == PLAY)
